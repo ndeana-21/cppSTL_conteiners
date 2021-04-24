@@ -10,22 +10,22 @@ namespace ft {
 	template <typename T, typename A = std::allocator<T> >
 	class Vector {
 		public:
-			typedef T value_type;
-			typedef A allocator_type;
-			typedef T& reference;
-			typedef const T& const_reference;
-			typedef T* pointer;
-			typedef const T* const_pointer;
-			typedef ft::VectorIterator<T> iterator;
-			typedef ft::ConstVectorIterator<T> const_iterator;
-			typedef ft::ReverseVectorIterator<T> reverse_iterator;
-			typedef ft::ConstReverseVectorIterator<T> const_reverse_iterator;
-			typedef unsigned long size_type;
+			typedef T                                   value_type;
+			typedef A                                   allocator_type;
+			typedef T&                                  reference;
+			typedef const T&                            const_reference;
+			typedef T*                                  pointer;
+			typedef const T*                            const_pointer;
+			typedef ft::VectorIterator<T>               iterator;
+			typedef ft::ConstVectorIterator<T>          const_iterator;
+			typedef ft::ReverseVectorIterator<T>        reverse_iterator;
+			typedef ft::ConstReverseVectorIterator<T>   const_reverse_iterator;
+			typedef unsigned long                       size_type;
 		private:
-			size_type _container_length;
-			size_type _container_size;
-			pointer _container;
-			allocator_type _allocator;
+			size_type       _container_length;
+			size_type       _container_size;
+			pointer         _container;
+			allocator_type  _allocator;
 		public:
 			explicit Vector(const allocator_type &allocator = allocator_type()) : _container_length(0), _container_size(0), _container(0), _allocator(allocator) {
 			    _container = _allocator.allocate(0);
@@ -83,11 +83,18 @@ namespace ft {
 					_container = tmp;
 				}
 			};
+
 			void push_back(const value_type &value) {
-				if (_container_length + 1 > _container_size)
-					reserve(_container_length + 1);
-				_container[_container_length++] = value;
+				if (_container_length == _container_size) {
+                    if (_container_length == 0)
+                        reserve(1);
+                    else
+                        reserve(_container_size * 2);
+                }
+                _container[_container_length] = value;
+                _container_length++;
 			};
+
 			size_type size(void) const {return (_container_length);};
 
 			size_type capacity(void) const {return (_container_size);};
@@ -124,7 +131,9 @@ namespace ft {
 				}
 			};
 
-			size_type max_size(void) const {return (std::numeric_limits<size_type>::max() / sizeof(value_type));};
+			size_type max_size(void) const {
+			    return (_allocator.max_size());
+			};
 
 			reference at(size_type n) {
 				if (n >= _container_length || n < 0)
@@ -156,17 +165,26 @@ namespace ft {
 				return (iterator(begin));
 			};
 
-			void clear(void) {erase(begin(), end());};
+			void clear(void) {
+			    while (this->_container_length)
+				    pop_back();
+			};
 
 			template <class InputIterator>
 			void assign(InputIterator first, InputIterator last) {
 				clear();
-				insert(begin(), first, last);
+                while (first != last) {
+                    push_back(*first);
+                    ++first;
+                }
 			};
 
 			void assign(size_type n, const value_type &value) {
 				clear();
-				insert(begin(), n, value);
+                while (n >= 0) {
+                    push_back(value);
+                    --n;
+                }
 			};
 
 			reference front(void) {return _container[0];};
@@ -179,9 +197,11 @@ namespace ft {
 
 			void resize(size_type n, value_type value = value_type()) {
 				while (n < _container_length)
-					pop_back();
-				while (n > _container_length)
-					push_back(value);
+                    pop_back();
+                if (n > _container_size)
+                    reserve(n);
+                while (n > _container_length)
+                    push_back(value);
 			};
 			void swap(Vector &other) {
 				ft::swap(_container, other._container);
@@ -195,7 +215,7 @@ namespace ft {
 
 	template<class T, class Alloc>
 	bool operator==(const Vector<T, Alloc> &a, const Vector<T, Alloc> &b) {
-		if (a.size() != b.size())
+	    if (a.size() != b.size())
 			return (false);
 		unsigned long i = -1;
 		while (++i < a.size()) {

@@ -1,4 +1,4 @@
-#paragma once
+#pragma once
 
 namespace ft {
 	template <class T>

@@ -1,0 +1,2 @@
+TARGET = ft_stl_test
+
