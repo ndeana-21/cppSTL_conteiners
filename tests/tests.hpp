@@ -1,6 +1,3 @@
-//
-// Created by ndeana on 22.04.2021.
-//
 #pragma once
 
 #include <stdlib.h>
@@ -25,7 +22,7 @@
 #define GREEN "\e[92m"
 #define BLUE "\e[94m"
 
-#define SUCCESS "✓"
+#define SUCCESS "✅"
 #define FAIL "❌"
 
 void    testList(void);
@@ -34,11 +31,11 @@ void    testMap(void);
 void    testStack(void);
 void    testQueue(void);
 
-inline void print_header(std::string str)
+inline void print_header(std::string str, std::string color)
 {
 	int margin = (40 - str.length()) / 2;
 	int width = (margin * 2 + str.length()) + 2;
-	std::cout << BLUE << std::endl;
+	std::cout << color << std::endl;
 	std::cout << std::string(width, '*') << std::endl;
 	std::cout << "*" << std::string(margin, ' ') << str << std::string(margin, ' ') << "*" << std::endl;
 	std::cout << std::string(width, '*') << std::endl;
@@ -48,20 +45,18 @@ inline void print_header(std::string str)
 template <typename T>
 inline void check(std::string name, T a, T b)
 {
-	std::string margin(38 - name.length(), ' ');
 	if (a == b)
-		std::cout << name << ": " << margin << BOLD << GREEN << SUCCESS << RESET << std::endl;
+		std::cout << SUCCESS << " " << name << std::endl;
 	else
-		std::cout << name << ": " << margin << FAIL << std::endl;
+		std::cout << FAIL << name << std::endl;
 };
 
 inline void check(std::string name, bool good)
 {
-	std::string margin(38 - name.length(), ' ');
 	if (good)
-		std::cout << name << ": " << margin << BOLD << GREEN << SUCCESS << RESET << std::endl;
+		std::cout << SUCCESS << " " << name << std::endl;
 	else
-		std::cout << name << ": " << margin << FAIL << std::endl;
+		std::cout << FAIL << name << std::endl;
 };
 
 template <typename T>

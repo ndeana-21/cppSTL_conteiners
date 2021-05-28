@@ -1,17 +1,38 @@
 #include "tests.hpp"
 
+template <typename T>
+bool operator==(ft::Stack<T> &a, std::stack<T> &b)
+{
+	if (a.size() != b.size())
+		return (false);
+	if (a.empty() != b.empty())
+		return (false);
+	ft::Stack<T> testA = a;
+	std::stack<T> testB = b;
+	for (size_t i = testB.size(); i > 0; i--)
+	{
+		if (testA.top() != testB.top())
+			return (false);
+		testB.pop();
+		testA.pop();
+	}
+	return (true);
+};
+
 static void constructors(void)
 {
-	print_header("Constructor");
+	print_header("Constructor", BLUE);
 	ft::Stack<int> q1;
 	std::stack<int> q2;
-	check("q1.size() == q2.size()", q1.size() == q2.size());
-	check("q1.empty() == q2.empty()", q1.empty() == q2.empty());
+	ft::Stack<std::string> q3;
+	std::stack<std::string> q4;
+	check("Stack int", q1 == q2);
+	check("Stack string", q3 == q4);
 }
 
 static void front_back(void)
 {
-	print_header("Front / Back / Push / Pop");
+	print_header("Front / Back / Push / Pop", BLUE);
 	ft::Stack<int> q1;
 	std::stack<int> q2;
 	q1.push(0);
@@ -20,18 +41,61 @@ static void front_back(void)
 	q2.push(0);
 	q2.push(1);
 	q2.push(2);
-	check("q1.size() == q2.size()", q1.size() == q2.size());
-	check("q1.empty() == q2.empty()", q1.empty() == q2.empty());
-	check("q1.top() == q2.top()", q1.top(), q2.top());
+	check("size()", q1.size() == q2.size());
+	check("empty()", q1.empty() == q2.empty());
+	check("top()", q1.top(), q2.top());
 	q1.pop();
 	q2.pop();
-	check("q1.size() == q2.size()", q1.size() == q2.size());
-	check("q1.top() == q2.top()", q1.top(), q2.top());
+	check("size()", q1.size() == q2.size());
+	check("top()", q1.top(), q2.top());
+}
+
+static void relational_operators() {
+	print_header("Relational operators", BLUE);
+
+	ft::Stack<int> q1;
+	std::stack<int> q2;
+	ft::Stack<int> q3;
+	std::stack<int> q4;
+
+	check("q1 == q2 empty", (q1 == q3), (q2 == q4));
+	check("q1 != q2 empty", (q1 != q3), (q2 != q4));
+	check("q1 >  q2 empty", (q1 > q3), (q2 > q4));
+	check("q1 <  q2 empty", (q1 < q3), (q2 < q4));
+	check("q1 >= q2 empty", (q1 >= q3), (q2 >= q4));
+	check("q1 <= q2 empty", (q1 <= q3), (q2 <= q4));
+	
+	q1.push(0);
+	q1.push(1);
+	q1.push(2);
+	q1.push(3);
+	q1.push(4);
+	q2.push(0);
+	q2.push(1);
+	q2.push(2);
+	q2.push(3);
+	q2.push(4);
+	check("q1 == q2 after push", (q1 == q3), (q2 == q4));
+	check("q1 != q2 after push", (q1 != q3), (q2 != q4));
+	check("q1 >  q2 after push", (q1 > q3), (q2 > q4));
+	check("q1 <  q2 after push", (q1 < q3), (q2 < q4));
+	check("q1 >= q2 after push", (q1 >= q3), (q2 >= q4));
+	check("q1 <= q2 after push", (q1 <= q3), (q2 <= q4));
+	
+	q3 = q1;
+	q4 = q2;
+	check("q1 == q2 after equal", (q1 == q3), (q2 == q4));
+	check("q1 != q2 after equal", (q1 != q3), (q2 != q4));
+	check("q1 >  q2 after equal", (q1 > q3), (q2 > q4));
+	check("q1 <  q2 after equal", (q1 < q3), (q2 < q4));
+	check("q1 >= q2 after equal", (q1 >= q3), (q2 >= q4));
+	check("q1 <= q2 after equal", (q1 <= q3), (q2 <= q4));
 }
 
 void testStack(void)
 {
-	print_header("Stack");
+	print_header("Stack", GREEN);
 	constructors();
+	relational_operators();
 	front_back();
 }

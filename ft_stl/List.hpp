@@ -5,7 +5,7 @@
 #include "ListIterator.hpp"
 
 namespace ft {
-	template <class T, class Alloc=std::allocator<T>>
+	template <class T, class Alloc=std::allocator<T> >
 	class List {
 		public:
 			typedef T                                       value_type;
@@ -63,7 +63,10 @@ namespace ft {
 			};
 
 			template <class InputIterator>
-			List(InputIterator first, InputIterator last, const allocator_type &alloc=allocator_type()) : _list_begin(0), _list_end(0), _allocator(alloc), _length(0) {
+			List(InputIterator first, InputIterator last, const allocator_type &alloc=allocator_type(),
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
+				:_list_begin(0), _list_end(0), _allocator(alloc), _length(0)
+			{
 				_init_list();
 				assign(first, last);
 			};
@@ -102,7 +105,7 @@ namespace ft {
 
 			size_type size(void) const {return (_length);};
 
-			size_type max_size(void) const {return (std::numeric_limits<size_type>::max() / (sizeof(Node<T>)));};
+			size_type max_size(void) const {return (std::numeric_limits<size_type>::max() / (sizeof(Node<T>)) / 2);};
 
 			reference front(void) {return (_list_begin->next->data);};
 			const_reference front(void) const {return (_list_begin->next->data);};
@@ -111,7 +114,8 @@ namespace ft {
 			const_reference back(void) const {return (_list_end->prev->data);};
 
 			template <class InputIterator>
-			void assign(InputIterator first, InputIterator last) {
+			void assign(InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) {
 				clear();
 				while (first != last)
 					push_back(*(first++));
@@ -175,9 +179,10 @@ namespace ft {
 				while (n--)
 					position = insert(position, value);
 			};
-
+			
 			template <class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last) {
+			void insert(iterator position, InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) {
 				while (first != last) {
 					position = insert(position, *(first++));
 					if (position != end())
@@ -234,7 +239,9 @@ namespace ft {
 				_length = 0;
 			};
 
-			void splice(iterator position, List &x) {splice(position, x, x.begin(), x.end());};
+			void splice(iterator position, List &x) {
+				splice(position, x, x.begin(), x.end());
+			};
 
 			void splice(iterator position, List &x, iterator i) {
 				insert(position, *i);
