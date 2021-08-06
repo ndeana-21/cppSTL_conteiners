@@ -2,19 +2,19 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <ctime>
+#include <utility>
+#include <string>
 
-#include <list>
 #include <vector>
 #include <map>
 #include <stack>
-#include <queue>
-#include <utility>
+#include <set>
 
-#include "../ft_stl/List.hpp"
-#include "../ft_stl/Vector.hpp"
-#include "../ft_stl/Map.hpp"
-#include "../ft_stl/Stack.hpp"
-#include "../ft_stl/Queue.hpp"
+#include "vector.hpp"
+#include "map.hpp"
+#include "stack.hpp"
+#include "set.hpp"
 
 #define RESET "\e[0m"
 #define BOLD "\e[1m"
@@ -25,11 +25,41 @@
 #define SUCCESS "✅"
 #define FAIL "❌"
 
-void    testList(void);
+
 void    testVector(void);
 void    testMap(void);
 void    testStack(void);
-void    testQueue(void);
+void    testSet(void);
+
+static std::clock_t	g_timer = std::clock();
+static std::clock_t	g_timerFT = std::clock();
+static std::clock_t	g_timerSTD = std::clock();
+
+namespace ftt 
+{
+inline void reset() {
+	g_timer = std::clock();
+}
+
+inline void STL_set() {
+	g_timerSTD = std::clock() - g_timer;
+	reset();
+}
+
+inline void FT_set() {
+	g_timerFT = std::clock() - g_timer;
+	reset();
+}
+
+inline void result_print() {
+	if (g_timerFT <= g_timerSTD)
+		std::cout << GREEN;
+	else
+		std::cout << RED;
+	std::cout << "ft " << g_timerFT << " vs " << g_timerSTD << " stl" << RESET << std::endl;
+}
+
+}
 
 inline void print_header(std::string str, std::string color)
 {
@@ -51,6 +81,15 @@ inline void check(std::string name, T a, T b)
 		std::cout << FAIL << name << std::endl;
 };
 
+// template <typename T, typename B>
+// inline void check(std::string name, T a, B b)
+// {
+// 	if (a == b)
+// 		std::cout << SUCCESS << " " << name << std::endl;
+// 	else
+// 		std::cout << FAIL << name << std::endl;
+// };
+
 inline void check(std::string name, bool good)
 {
 	if (good)
@@ -59,55 +98,78 @@ inline void check(std::string name, bool good)
 		std::cout << FAIL << name << std::endl;
 };
 
-template <typename T>
-bool operator==(ft::Vector<T> &a, std::vector<T> &b)
-{
-	if (a.size() != b.size())
-		return (false);
-	if (a.empty() != b.empty())
-		return (false);
-	for (size_t i = 0; i < a.size(); i++)
-	{
-		if (a[i] != b[i])
-			return (false);
-	}
-	return (true);
-};
+
+
+
 
 template <typename T>
-bool operator==(ft::List<T> &a, std::list<T> &b)
+bool operator==(ft::vector<T> &ft_vec, std::vector<T> &std_vec)
 {
-	if (a.size() != b.size())
+	if (ft_vec.size() != std_vec.size())
 		return (false);
-	if (a.empty() != b.empty())
+	if (ft_vec.empty() != std_vec.empty())
 		return (false);
-	typename ft::List<T>::iterator it = a.begin();
-	typename std::list<T>::iterator it2 = b.begin();
-	while (it != a.end())
+	for (size_t i = 0; i < ft_vec.size(); i++)
 	{
-		if (*it != *it2)
+		if (ft_vec[i] != std_vec[i])
 			return (false);
-		++it;
-		++it2;
 	}
 	return (true);
 };
 
 template <typename T, typename S>
-bool operator==(ft::Map<T, S> &a, std::map<T, S> &b)
+bool operator==(ft::map<T, S> &ft_map, std::map<T, S> &std_map)
 {
-	if (a.size() != b.size())
+	if (ft_map.size() != std_map.size())
 		return (false);
-	if (a.empty() != b.empty())
+	if (ft_map.empty() != std_map.empty())
 		return (false);
-	typename ft::Map<T, S>::iterator it = a.begin();
-	typename std::map<T, S>::iterator it2 = b.begin();
-	while (it != a.end())
+	typename ft::map<T, S>::iterator ft_it = ft_map.begin();
+	typename std::map<T, S>::iterator std_it = std_map.begin();
+	while (ft_it != ft_map.end() || std_it != std_map.end())
 	{
-		if (it->first != it2->first || it->second != it2->second)
+		if (ft_it->first != std_it->first || ft_it->second != std_it->second)
 			return (false);
-		++it;
-		++it2;
+		++ft_it;
+		++std_it;
+	}
+	return (true);
+};
+
+template <typename T>
+bool operator==(ft::stack<T> &ft_stack, std::stack<T> &std_stack)
+{
+	if (ft_stack.size() != std_stack.size())
+		return (false);
+	if (ft_stack.empty() != std_stack.empty())
+		return (false);
+	ft::stack<T> testA = ft_stack;
+	std::stack<T> testB = std_stack;
+	for (size_t i = testB.size(); i > 0; i--)
+	{
+		if (testA.top() != testB.top())
+			return (false);
+		testB.pop();
+		testA.pop();
+	}
+	return (true);
+};
+
+template <typename T>
+bool operator==(ft::set<T> &ft_set, std::set<T> &std_set)
+{
+	if (ft_set.size() != std_set.size())
+		return (false);
+	if (ft_set.empty() != std_set.empty())
+		return (false);
+	typename ft::set<T>::iterator ft_it = ft_set.begin();
+	typename std::set<T>::iterator std_it = std_set.begin();
+	while (ft_it != ft_set.end())
+	{
+		if (*(ft_it) != *(std_it))
+			return (false);
+		++ft_it;
+		++std_it;
 	}
 	return (true);
 };

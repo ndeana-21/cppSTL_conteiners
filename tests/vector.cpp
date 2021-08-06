@@ -30,14 +30,31 @@ static void print_vector_reverse(T vec, std::string type) {
 	std::cout << std::endl;
 }
 
+static void vector_int_filler(ft::vector<int> &input, int count) {
+	for (int i = 0; i < count; i++)
+		input.push_back(i);
+}
+static void vector_int_filler(std::vector<int> &input, int count) {
+	for (int i = 0; i < count; i++)
+		input.push_back(i);
+}
+// static void vector_str_filler(ft::vector<std::string> &input, int count) {
+// 	for (int i = 0; i < count; i++)
+// 		input.push_back(std::to_string(i));
+// }
+// static void vector_str_filler(std::vector<std::string> &input, int count) {
+// 	for (int i = 0; i < count; i++)
+// 		input.push_back(std::to_string(i));
+// }
+
 static void default_constructor(void) {
 	print_header("Default constructors", BLUE);
 	
-	ft::Vector<int> v1;
+	ft::vector<int> v1;
 	std::vector<int> v2;
 	check("default", v1 == v2);
 	
-	ft::Vector<int> vf1(3, 100);
+	ft::vector<int> vf1(3, 100);
 	std::vector<int> vf2(3, 100);
 	check("fill", vf1 == vf2);
 
@@ -47,84 +64,66 @@ static void default_constructor(void) {
 	v2.push_back(1);
 	v2.push_back(2);
 	v2.push_back(3);
-	ft::Vector<int> vr1(v2.begin(), v2.end());
+	ft::vector<int> vr1(v2.begin(), v2.end());
 	std::vector<int> vr2(v2.begin(), v2.end());
 	check("range", vr1 == vr2);
 
-	ft::Vector<int> vc3(v1);
+	ft::vector<int> vc3(v1);
 	std::vector<int> vc4(v2);
 	check("copy", vc3 == vc4);
 }
 
-static void push_back(void) {
-	print_header("Push back", BLUE);
-
-	{
-		ft::Vector<std::string> vs1;
-		std::vector<std::string> vs2;
-		ft::Vector<int> vi1;
-		std::vector<int> vi2;
-		
-		vi1.push_back(1);
-		vi2.push_back(1);
-		check("1 element int", vi1 == vi2);
-
-		vs1.push_back("test");
-		vs2.push_back("test");
-		check("1 element string", vs1 == vs2);
-		
-		for(int i = 0; i < 1000; i++) {
-			vs1.push_back("test");
-			vs2.push_back("test");
-			vi1.push_back(i);
-			vi2.push_back(i);
-		}
-		check("1000 elements int", vs1 == vs2);
-		check("1000 elements string", vs1 == vs2);
-	}
-
-}
-
-static void max_size(void) {
-	print_header("Max size", BLUE);
-	
-	ft::Vector<int> v1;
+static void Iterators() {
+	print_header("Iterators", BLUE);
+	ft::vector<int> v1;
 	std::vector<int> v2;
-    check("empty", v1.max_size(), v2.max_size());
-	
-	v1.push_back(10);
-	v2.push_back(10);
-	check("fill", v1.max_size(), v2.max_size());
-}
+	vector_int_filler(v1, 99);
+	vector_int_filler(v2, 99);
+	check("empty reserve", *v1.begin(), *v2.begin());
+	check("empty reserve", *v1.rbegin(), *v2.rbegin());
+	check("empty reserve", *--v1.end(), *--v2.end());
+	check("empty reserve", *--v1.rend(), *--v2.rend());
 
-static void resize(void) {
-	print_header("Resize", BLUE);
-	
-	ft::Vector<std::string> v1;
-	std::vector<std::string> v2;
-	v1.resize(10);
-	v2.resize(10);
-	check("std constructor", (v1 == v2));
-	
-	v1.resize(2, "42");
-	v2.resize(2, "42");
-	check("val", (v1 == v2));
 }
-
-static void access_operator(void) {
-	print_header("[] operator, at()", BLUE);
-	
-	ft::Vector<int> v1;
+static void Capacity() {
+	print_header("Capacity", BLUE);
+	ft::vector<int> v1;
 	std::vector<int> v2;
-	v1.push_back(1);
-	v1.push_back(2);
-	v1.push_back(3);
-	v2.push_back(1);
-	v2.push_back(2);
-	v2.push_back(3);
-	check("v1[0] == v2[0]", v1[0], v2[0]);
-	check("v1[1] == v2[1]", v1[1], v2[1]);
-	check("v1[2] == v2[2]", v1[2], v2[2]);
+	check("empty size", v1.size(), v2.size());
+	check("empty max_size", v1.max_size(), v2.max_size());
+	check("empty empty", v1.size(), v2.size());
+	check("empty capacity", v1.capacity(), v2.capacity());
+	v1.reserve(10);
+	v2.reserve(10);
+	check("empty reserve", v1 == v2);
+	v1.resize(15);
+	v2.resize(15);
+	check("empty resize", v1 == v2);
+	
+	vector_int_filler(v1, 99);
+	vector_int_filler(v2, 99);
+	check("filled size", v1.size(), v2.size());
+	check("filled max_size", v1.max_size(), v2.max_size());
+	check("filled empty", v1.size(), v2.size());
+	check("filled capacity", v1.capacity(), v2.capacity());
+	v1.reserve(10);
+	v2.reserve(10);
+	check("filled reserve", v1 == v2);
+	v1.resize(15);
+	v2.resize(15);
+	check("filled resize", v1 == v2);
+}
+static void Element_access() {
+	print_header("Element_access", BLUE);
+	ft::vector<int> v1;
+	std::vector<int> v2;
+	vector_int_filler(v1, 99);
+	vector_int_filler(v2, 99);
+	check("v1[0]", v1[0], v2[0]);
+	check("v1[1]", v1[1], v2[1]);
+	check("v1[2]", v1[2], v2[2]);
+	check("front", v1.front(), v2.front());
+	check("back", v1.back(), v2.back());
 	try {
 		v1.at(100);
 		std::cout << FAIL << " v1.at(100)" << std::endl;
@@ -149,153 +148,70 @@ static void access_operator(void) {
 	} catch (std::exception &e) {
 		std::cout << SUCCESS << " v2.at(-1): " << e.what() << std::endl;
 	}
-}
 
-static void front_back(void) {
-	print_header("Front / Back", BLUE);
-	
-	ft::Vector<int> v1;
+}
+static void Modifiers() {
+	print_header("Modifiers", BLUE);
+	ft::vector<int> v1;
 	std::vector<int> v2;
-	v1.push_back(1);
-	v1.push_back(2);
-	v1.push_back(3);
-	v2.push_back(1);
-	v2.push_back(2);
-	v2.push_back(3);
-	check("front()", v1.front(), v2.front());
-	check("back()", v1.back(), v2.back());
-}
 
-static void insert(void) {
-	print_header("Insert", BLUE);
+	vector_int_filler(v1, 100);
+	vector_int_filler(v2, 100);
+	check("push_back 100 elements", v1 == v2);
 	
-	std::vector<int> test;
+	v1.pop_back();
+	v2.pop_back();
+	v1.pop_back();
+	v2.pop_back();
+	check("pop_back", v1 == v2);
 	
-	test.push_back(1);
-	test.push_back(2);
-	test.push_back(3);
-	test.push_back(4);
-	test.push_back(5);
-	test.push_back(6);
-	test.push_back(7);
-	test.push_back(8);
-	test.push_back(9);
-	test.push_back(0);
-	test.push_back(1);
-	test.push_back(2);
-	test.push_back(3);
-	test.push_back(4);
-
-	ft::Vector<int> v1;
-	std::vector<int> v2;
-	
-
-	v1.insert(v1.begin(), 42);
-	v2.insert(v2.begin(), 42);
-	check("begin(), 42", v1 == v2);
-	
-	v1.insert(v1.end(), 21);
-	v2.insert(v2.end(), 21);
-	check("end(), 21", v1 == v2);
-	
-	v1.insert(v1.begin(), 10);
-	v2.insert(v2.begin(), 10);
-	check("begin(), 10", v1 == v2);
-	
-	v1.insert(v1.begin() + 1, 11);
-	v2.insert(v2.begin() + 1, 11);
-	check("begin() + 1, 11", v1 == v2);
-	
-	v1.insert(v1.begin() + 2, 3, 0);
-	v2.insert(v2.begin() + 2, 3, 0);
-	check("begin() + 2, 3, 0", v1 == v2);
-	
-	v1.insert(v1.begin() + 1, test.begin(), test.end());
-	v2.insert(v2.begin() + 1, test.begin(), test.end());
-	check("v1.begin() + 1, test.begin(), test.end()", v1 == v2);
-}
-
-static void assign(void) {
-	print_header("Assign", BLUE);
-	std::string test[] = {"Here", "is", "Jonny", "&"};
-	int inttest[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-
-	ft::Vector<std::string> v1;
-	std::vector<std::string> v2;
-	
-	ft::Vector<int> vi1;
-	std::vector<int> vi2;
-	
-	vi1.assign(inttest, inttest + 10);
-	vi2.assign(inttest, inttest + 10);
-	check("int iterators", v1 == v2);
-
-	vi1.assign(10, 10);
-	vi2.assign(10, 10);
-	check("int assign(10, 10)", v1 == v2);
-
-	v1.assign(test, test + 4);
-	v2.assign(test, test + 4);
-	check("string iterators", v1 == v2);
-	
-	v1.assign(10, "&");
-	v2.assign(10, "&");
-	check("string assign(10, \"&\")", v1 == v2);
-}
-
-static void erase(void) {
-	print_header("Erase / Clear", BLUE);
-	
-	int test[] = {1, 2, 3, 4};
-	ft::Vector<int> v1;
-	std::vector<int> v2;
-	v1.assign(test, test + 4);
-	v2.assign(test, test + 4);
-	v1.erase(v1.begin() + 2);
-	v2.erase(v2.begin() + 2);
-	check("v1 == v2", v1 == v2);
-	
-	v1.clear();
-	v2.clear();
-	check("v1 == v2", v1 == v2);
-}
-
-static void swap(void) {
-	print_header("Swap", BLUE);
-	
-	ft::Vector<int> v1;
-	std::vector<int> v2;
-	ft::Vector<int> v3;
+	ft::vector<int> v3;
 	std::vector<int> v4;
-	v1.push_back(1);
-	v1.push_back(2);
-	v1.push_back(3);
-	v2.push_back(1);
-	v2.push_back(2);
-	v2.push_back(3);
-	v3.push_back(42);
-	v3.push_back(43);
-	v4.push_back(42);
-	v4.push_back(43);
+	vector_int_filler(v3, 50);
+	vector_int_filler(v4, 50);
 	v1.swap(v3);
 	v2.swap(v4);
-	check("v1 == v2", v1 == v2);
-	check("v3 == v4", v3 == v4);
+	check("swap first pair", v1 == v2);
+	check("swap second pair", v3 == v4);
+	
+	v1.assign(v3.begin(), v3.end());
+	v2.assign(v3.begin(), v3.end());
+	check("assign range", v1 == v2);
+	v1.assign(100, 100);
+	v2.assign(100, 100);
+	check("assign fill", v1 == v2);
+
+	v1.insert(v1.begin(), 10);
+	v2.insert(v2.begin(), 10);
+	check("insert single element", v1 == v2);
+	v1.insert(v1.begin(), 10, 10);
+	v2.insert(v2.begin(), 10, 10);
+	check("insert fill", v1 == v2);
+	v1.insert(v1.begin(), v1.end() - 10, v1.end() - 1);
+	v2.insert(v2.begin(), v2.end() - 10, v2.end() - 1);
+	check("insert range", v1 == v2);
+	
+	v1.erase(v1.begin());
+	v2.erase(v2.begin());
+	check("erase single element", v1 == v2);
+	v1.erase(v1.begin(), v1.begin() + 10);
+	v2.erase(v2.begin(), v2.begin() + 10);
+	check("erase range", v1 == v2);
+
+	v1.clear();
+	v2.clear();
+	check("clear", v1 == v2);
 }
 
 static void operators(void) {
 	print_header("Operators", BLUE);
 	
-	ft::Vector<int> v1;
+	ft::vector<int> v1;
 	std::vector<int> v2;
-	ft::Vector<int> v3;
+	ft::vector<int> v3;
 	std::vector<int> v4;
-	v1.push_back(1);
-	v1.push_back(2);
-	v1.push_back(3);
-	v2.push_back(1);
-	v2.push_back(2);
-	v2.push_back(3);
+	vector_int_filler(v1, 100);
+	vector_int_filler(v2, 100);
 	v3 = v1;
 	v4 = v2;
 	check("v1 == v2", (v1 == v3), (v2 == v4));
@@ -325,17 +241,12 @@ static void operators(void) {
 }
 
 void	testVector(void) {
-	print_header("Vector", GREEN);
+	print_header("vector", GREEN);
 
 	default_constructor();
-	push_back();
-	resize();
-	assign();
-	max_size();
-	front_back();
-	access_operator();
-	insert();
-	erase();
-	swap();
+	Iterators();
+	Capacity();
+	Element_access();
+	Modifiers();
 	operators();
 }

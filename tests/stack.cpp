@@ -1,40 +1,22 @@
 #include "tests.hpp"
 
-template <typename T>
-bool operator==(ft::Stack<T> &a, std::stack<T> &b)
-{
-	if (a.size() != b.size())
-		return (false);
-	if (a.empty() != b.empty())
-		return (false);
-	ft::Stack<T> testA = a;
-	std::stack<T> testB = b;
-	for (size_t i = testB.size(); i > 0; i--)
-	{
-		if (testA.top() != testB.top())
-			return (false);
-		testB.pop();
-		testA.pop();
-	}
-	return (true);
-};
-
-static void constructors(void)
+static void Constructors(void)
 {
 	print_header("Constructor", BLUE);
-	ft::Stack<int> q1;
+	ft::stack<int> q1;
 	std::stack<int> q2;
-	ft::Stack<std::string> q3;
+	ft::stack<std::string> q3;
 	std::stack<std::string> q4;
-	check("Stack int", q1 == q2);
-	check("Stack string", q3 == q4);
+	check("stack int", q1 == q2);
+	check("stack string", q3 == q4);
 }
 
 static void front_back(void)
 {
 	print_header("Front / Back / Push / Pop", BLUE);
-	ft::Stack<int> q1;
+	ft::stack<int> q1;
 	std::stack<int> q2;
+	
 	q1.push(0);
 	q1.push(1);
 	q1.push(2);
@@ -53,9 +35,9 @@ static void front_back(void)
 static void relational_operators() {
 	print_header("Relational operators", BLUE);
 
-	ft::Stack<int> q1;
+	ft::stack<int> q1;
 	std::stack<int> q2;
-	ft::Stack<int> q3;
+	ft::stack<int> q3;
 	std::stack<int> q4;
 
 	check("q1 == q2 empty", (q1 == q3), (q2 == q4));
@@ -94,8 +76,8 @@ static void relational_operators() {
 
 void testStack(void)
 {
-	print_header("Stack", GREEN);
-	constructors();
+	print_header("stack", GREEN);
+	Constructors();
 	relational_operators();
 	front_back();
 }
